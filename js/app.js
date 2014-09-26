@@ -20,8 +20,11 @@ $(function(){
 
   $("#userGuess").keydown(function(event) {
     if(event.which == 13) {
-      var guess = $(this).val();
+      var guess = Number($(this).val());
       console.log('guess', guess);
+      if(isNaN(guess)) {
+        $('#feedback').val('You did not enter a number');
+      }
     }
   });
 });
