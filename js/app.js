@@ -1,20 +1,25 @@
 $(function(){
   var secret;
   var numGuesses;
-  var hasWon = false;
+  var hasWon;
 
   function newGame() {
-    secretNumber();
-    $('#feedback').text('Make your Guess');
-    $('#userGuess').val('');
-    $('#guessList').empty();
+    secret = secretNumber();
     numGuesses = 0;
     hasWon = false;
+    setFeedback('Make your Guess');
+    $('#userGuess').val('');
+    $('#guessList').empty();
     $('#count').text(0);
+    document.getElementById("userGuess").focus();
   }
 
   function secretNumber() {
-    secret = Math.floor(Math.random() * 100 + 1);
+    return Math.floor(Math.random() * 100 + 1);
+  }
+
+  function setFeedback(feedback) {
+    $('#feedback').text(feedback);
   }
 
   function handleUserInput() {
@@ -25,20 +30,19 @@ $(function(){
     userInput.val('');
 
     if(hasWon) {
-      $('#feedback').text('You won this game already! You need to start a ' +
-        'new game.');
-    } else if((inputVal.length > 0 && inputVal.trim().length == 0) || 
-      isNaN(guess)) {
-      $('#feedback').text('No luck! I accept only numbers.');
-    } else if(inputVal.length > 0 && (guess < 1 || guess > 100)) {
-      $('#feedback').text('Oops! Your guess has to be a number between 1 ' +
-        'and 100');
+      setFeedback('You won this game already! You need to start a new game.');
     } else if(inputVal.length > 0) {
-      $('#guessList').append('<li>' + inputVal + '</li>');
-      numGuesses++;
-      $('#count').text(numGuesses);
-      feedback = getFeedback(guess);
-      $('#feedback').text(feedback);
+      if(isWhitespace(inputVal) || isNaN(guess)) {
+        setFeedback('No luck! I accept only numbers.');
+      } else if(guess < 1 || guess > 100) {
+        setFeedback('Oops! Your guess has to be a number between 1 and 100');
+      } else {
+        numGuesses++;
+        $('#count').text(numGuesses);
+        $('#guessList').append('<li>' + inputVal + '</li>');
+        feedback = getFeedback(guess);
+        setFeedback(feedback);
+      }
     }
   }
 
@@ -58,6 +62,10 @@ $(function(){
     } else if(50 <= dist) {
       return 'Ice cold';
     }
+  }
+
+  function isWhitespace(str) {
+    return str.length > 0 && str.trim().length == 0;
   }
 
   /* Display information modal box */
