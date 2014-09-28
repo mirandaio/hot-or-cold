@@ -1,10 +1,15 @@
 $(function(){
   var secret;
+  var numGuesses;
+  var hasWon = false;
 
   function newGame() {
     secretNumber();
     $('#feedback').text('Make your Guess');
     $('#userGuess').val('');
+    $('#guessList').empty();
+    numGuesses = 0;
+    $('#count').text(0);
   }
 
   function secretNumber() {
@@ -13,13 +18,23 @@ $(function(){
 
   function handleUserInput() {
     var userInput = $('#userGuess');
-    var guess = Number(userInput.val());
+    var inputVal = userInput.val();
+    var guess = Number(inputVal);
     userInput.val('');
-    if(isNaN(guess)) {
-      $('#feedback').text('You did not enter a valid number');
-      $('#userGuess').val('');
-    } else {
-      $('#guessList').append('<li>' + guess + '</li>');
+
+    if(hasWon) {
+      $('#feedback').text('You won this game already! You need to start a ' +
+        'new game.');
+    } else if((inputVal.length > 0 && inputVal.trim().length == 0) || 
+      isNaN(guess)) {
+      $('#feedback').text('No luck! I accept only numbers.');
+    } else if(inputVal.length > 0 && (guess < 1 || guess > 100)) {
+      $('#feedback').text('Oops! Your guess has to be a number between 1 ' +
+        'and 100');
+    } else if(inputVal.length > 0) {
+      $('#guessList').append('<li>' + inputVal + '</li>');
+      numGuesses++;
+      $('#count').text(numGuesses);
     }
   }
 
@@ -49,4 +64,6 @@ $(function(){
   $('#guessButton').click(function() {
     handleUserInput();
   });
+
+  newGame();
 });
