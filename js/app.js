@@ -9,6 +9,7 @@ $(function(){
     $('#userGuess').val('');
     $('#guessList').empty();
     numGuesses = 0;
+    hasWon = false;
     $('#count').text(0);
   }
 
@@ -20,6 +21,7 @@ $(function(){
     var userInput = $('#userGuess');
     var inputVal = userInput.val();
     var guess = Number(inputVal);
+    var feedback;
     userInput.val('');
 
     if(hasWon) {
@@ -35,6 +37,26 @@ $(function(){
       $('#guessList').append('<li>' + inputVal + '</li>');
       numGuesses++;
       $('#count').text(numGuesses);
+      feedback = getFeedback(guess);
+      $('#feedback').text(feedback);
+    }
+  }
+
+  function getFeedback(guess) {
+    var dist = Math.abs(secret - guess);
+    if(dist == 0) {
+      hasWon =  true;
+      return 'Yay! You guessed it!';
+    } else if(1 <= dist && dist < 10) {
+      return 'Very hot!';
+    } else if(10 <= dist && dist < 20) {
+      return 'Hot!';
+    } else if(20 <= dist && dist < 30) {
+      return 'Warm';
+    } else if(30 <= dist && dist < 50) {
+      return 'Cold';
+    } else if(50 <= dist) {
+      return 'Ice cold';
     }
   }
 
